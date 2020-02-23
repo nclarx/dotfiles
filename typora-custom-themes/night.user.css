@@ -1,0 +1,17 @@
+p, th, td {
+  color: #FFFFFF;
+}
+
+table {
+  background: #000000;
+  border-radius: 10px;
+}
+
+td, th {
+  font-weight: 600;
+  border: solid 4px #238500;
+}
+
+td strong {
+  color: red;
+}

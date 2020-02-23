@@ -1,0 +1,29 @@
+/* Set Writing Area Width */
+
+#write {
+  max-width: 90vw; 
+}
+
+/* Print Styles */
+
+@media print {
+  .break {
+    page-break-before: always;
+  }
+  
+  p {
+  	font-size: 12px;
+  }
+}
+
+::selection { background:#FF6666; color:#FFFFFF; }
+::-moz-selection { background:#B9B9B9; color:#000000; }
+::-webkit-selection { background:#B9B9B9; color:#000000; }
+
+strong {
+  color: red;
+}
+
+em {
+  color: green;
+}

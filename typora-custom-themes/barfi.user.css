@@ -1,0 +1,7 @@
+/* Typography */
+
+
+/* Makes normal paragraph text and text in table cells white*/
+p[mdtype='paragraph'], td {
+  color: white !important;
+}
