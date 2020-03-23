@@ -11,14 +11,19 @@ if ! filereadable(expand('~/.config/nvim/autoload/plug.vim'))
   "InstallPlugged()
 endif
 
+
+
+
 " PLUGINS 
   call plug#begin('~/.vim/plugged')
+    Plug 'gcmt/taboo.vim' " Naming of tabs
     Plug 'neoclide/coc.nvim', {'branch': 'release'} " Autocompletion 
-    Plug 'junegunn/goyo.vim' " Distraction free writing with <Leader>ff
     Plug 'francoiscabrol/ranger.vim' "https://github.com/francoiscabrol/ranger.vim
     Plug 'rbgrouleff/bclose.vim' "dependency of ranger.vim
+    Plug 'junegunn/goyo.vim' " Distraction free writing with <Leader>ff
     Plug 'scrooloose/nerdtree' " Filebrowser
     Plug 'vimwiki/vimwiki' " Wiki inside Vim
+    Plug 'ptzz/lf.vim' "LF integration
     Plug 'ryanoasis/vim-devicons'
     Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
     "plug 'prettier/vim-prettier', { 'do': 'yarn install' }
@@ -26,8 +31,12 @@ endif
     Plug 'herringtondarkholme/yats.vim' " TS Syntax
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-obsession'
     Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-unimpaired'
     Plug 'gregsexton/MatchTag'
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
   call plug#end()
 
 " Base Settings
@@ -39,7 +48,7 @@ endif
 	syntax on
 	set encoding=utf-8
 	set number relativenumber
-
+  set cursorline cursorcolumn
   if (has("termguicolors"))
    set termguicolors
   endif
@@ -50,6 +59,7 @@ endif
   hi Comment guifg=#EEEEEE
   hi Comment guibg=#373b41
 
+  set sessionoptions+=tabpages,globals " for Taboo to save set tabnames in session file
 	set relativenumber
 	set smarttab
 	set cindent
@@ -60,9 +70,16 @@ endif
 
 " KEY BINDINGS ================================= 
 
+  " Splits
+
+  nnoremap <C-J> <C-W><C-J>
+  nnoremap <C-K> <C-W><C-K>
+  nnoremap <C-L> <C-W><C-L>
+  nnoremap <C-H> <C-W><C-H>
+  set splitbelow
+  set splitright
   " Goyo
   map <leader>ff :Goyo<CR> 
-
 
 	" j and k move up and down visually, not per line 
 	noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
@@ -71,18 +88,26 @@ endif
 	inoremap jk <ESC>
 	nmap <C-n> :NERDTreeToggle<CR>
 
-" Status Line
+  " Tabs
+  nnoremap <C-Left> :tabprevious<CR>
+  nnoremap <C-Right> :tabnext<CR>
+  nnoremap <silent> <A-Left> :execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
+  nnoremap <silent> <A-Right> :execute 'silent! tabmove ' . (tabpagenr()+1)<CR>
+  let notabs = 0
+  nnoremap <silent> <F8> :let notabs=!notabs<Bar>:if notabs<Bar>:tabo<Bar>:else<Bar>:tab ball<Bar>:tabn<Bar>:endif<CR>
+
+  " Status Line
 	set statusline=[%n]\ %<%.99f\ %h%w%m%r%{exists('*CapsLockStatusline')?CapsLockStatusline():''}%y%=%-16(\ %l,%c-%v\ %)%P
 
-" Coc Mappings
-
- nmap <leader>d <Plug>(coc-diagnostic-info)
+  " Coc Mappings
+   nmap <leader>d <Plug>(coc-diagnostic-info)
 
 " PLUGIN CONFIG
 
 	" ctrlp - fuzzy search
 		let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
+let g:ctrlp_working_path_mode = 'ra'
 
 
 " COC Config
@@ -213,11 +238,14 @@ endif
 	" Resume latest coc list
 	nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
-
 " RANGER INTEGRATION
 
 let g:ranger_map_keys = 0
-map <leader>x :Ranger<CR>
+map <leader>x :RangerCurrentDirectory<CR>
+
+" LF INTEGRATION
+  let g:lf_map_keys = 0
+  map <leader>f :Lf<CR>
 
 " GOYO
 
@@ -258,7 +286,13 @@ let wiki_2.path = '~/vimwiki/private/'
 let wiki_2.path_html = '~/vimwiki/private/private_html/'
 let wiki_2.automatic_nested_syntaxes=1
 
-let g:vimwiki_list = [wiki_1, wiki_2]
+let wiki_3 = {}
+let wiki_3.path = '~/vimwiki/ca/'
+let wiki_3.path_html = '~/vimwiki/ca/ca_html/'
+let wiki_3.automatic_nested_syntaxes=1
 
+let g:vimwiki_list = [wiki_1, wiki_2, wiki_3]
+
+autocmd VimEnter * if argv() ==# ['vww'] | execute "normal '3\<Leader>ww'" | endif
 autocmd VimEnter * if argv() ==# ['vpw'] | execute "normal '2\<Leader>ww'" | endif
 autocmd VimEnter * if argv() ==# ['vxx'] | execute "normal '1\<Leader>ww'" | endif
